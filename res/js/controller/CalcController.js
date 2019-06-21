@@ -65,27 +65,31 @@ class CalcController {
                 break;
 
             case 'soma':
-
+                this._addOperation('+');
                 break;
 
             case 'subtracao':
-
+                this._addOperation('-');
                 break;
 
             case 'multiplicacao':
-
+                this._addOperation('*');
                 break;
 
             case 'divisao':
-
+                this._addOperation('/');
                 break;
 
             case 'porcento':
-
+                this._addOperation('%');
                 break;
 
             case 'igual':
 
+                break;
+
+            case 'ponto':
+                this._addOperation('.');
                 break;
 
             case '0':
@@ -105,8 +109,6 @@ class CalcController {
             default:
                 this._setError();
                 break;
-
-
         }
 
     }
@@ -119,9 +121,53 @@ class CalcController {
         this._operation.pop();
     }
 
+    _getLasOperation() {
+        return this._operation[this._operation.length - 1];
+    }
+
+    _setLastOperation(val) {
+        this._operation[this._operation.length -1] = val;
+    }
+
     _addOperation(val) {
-        this._operation.push(val);
+
+        if (isNaN(this._getLasOperation())) {
+            //não é um número
+
+            if (this._isOperator(val)) {
+
+                //trocar operador
+                this._setLastOperation(val);
+
+            } else if(isNaN(val)) {
+
+                console.log(val);
+            } else {
+                this._operation.push(val);
+
+            }
+
+        } else {
+            //é um número
+
+            const newValue = this._getLasOperation().toString() + val.toString();
+            this._setLastOperation(parseInt(newValue));
+
+        }
+
         console.table(this._operation);
+    }
+
+    _isOperator(key) {
+
+        /**
+         * O método indexOf procura o elemento (key) dentro do array informado
+         * Se encontrar um valor, ele retorna o índice de onde o elemento está
+         * Caso não encontre, o método retorna -1
+         */
+
+        return (['+', '-', '*', '/', '%'].indexOf(key) > -1);
+
     }
 
     _setError() {
