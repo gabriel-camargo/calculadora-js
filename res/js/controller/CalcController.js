@@ -85,7 +85,7 @@ class CalcController {
                 break;
 
             case 'igual':
-
+                this._calc();
                 break;
 
             case 'ponto':
@@ -115,10 +115,12 @@ class CalcController {
 
     _clearAll() {
         this._operation = [];
+        this._setLastNumberToDisplay();
     }
 
     _cancelEntry() {
         this._operation.pop();
+        this._setLastNumberToDisplay();
     }
 
     _getLasOperation() {
@@ -141,18 +143,33 @@ class CalcController {
     }
 
     _calc() {
-        let last = this._operation.pop();
 
+        let last = '';
+
+        if(this._operation.length > 3) {
+            last = this._operation.pop();
+        }
         let result = eval(this._operation.join(''));
 
-        this._operation = [result, last];
+        switch (last) {
+            case '%':
+                result /= 100;
+                this._operation = [result];
+                break;
+        
+            default:
+                this._operation = [result];
+
+                if(last) this._operation.push(last);
+                break;
+        }
 
         this._setLastNumberToDisplay();
     }
 
     _setLastNumberToDisplay() {
 
-        let lastNumber;
+        let lastNumber = 0;
 
         for (let index = this._operation.length-1; index >= 0; index--) {
 
