@@ -129,6 +129,29 @@ class CalcController {
         this._operation[this._operation.length -1] = val;
     }
 
+    _pushOperation(val) {
+        this._operation.push(val);
+
+        if(this._operation.length > 3) {
+            
+
+            this._calc();
+        }
+
+    }
+
+    _calc() {
+        let last = this._operation.pop();
+
+        let result = eval(this._operation.join(''));
+
+        this._operation = [result, last];
+    }
+
+    _setLastNumberToDisplay() {
+
+    }
+    
     _addOperation(val) {
 
         if (isNaN(this._getLasOperation())) {
@@ -143,19 +166,25 @@ class CalcController {
 
                 console.log(val);
             } else {
-                this._operation.push(val);
+                
+                this._pushOperation(val);
 
             }
 
         } else {
-            //é um número
 
-            const newValue = this._getLasOperation().toString() + val.toString();
-            this._setLastOperation(parseInt(newValue));
+            if(this._isOperator(val)) {
 
+                this._pushOperation(val);
+            } else {
+                //é um número
+
+                const newValue = this._getLasOperation().toString() + val.toString();
+                this._setLastOperation(parseInt(newValue));
+
+                this._setLastNumberToDisplay();
+            }
         }
-
-        console.table(this._operation);
     }
 
     _isOperator(key) {
