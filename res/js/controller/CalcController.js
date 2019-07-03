@@ -1,6 +1,8 @@
 class CalcController {
 
     constructor() {
+        this._lastOperator = '';
+        this._lastNumber = 0;
 
         this._operation = [];
         this._locale = 'pt-BR';
@@ -142,14 +144,33 @@ class CalcController {
 
     }
 
+    _getResult() {
+        return eval(this._operation.join(''));
+    }
+
     _calc() {
 
         let last = '';
 
+        this._lastOperator = this._getLastItem();
+
+        if(this._operation.length < 3) {
+            let firstItem = this._operation[0];
+            this._operation = [firstItem, this._lastOperator, this._lastNumber];
+        } 
+        
         if(this._operation.length > 3) {
-            last = this._operation.pop();
+
+            last = this._operation.pop();            
+            this._lastNumber = this._getResult();
+
+        } else if(this._operation.length == 3) {
+
+            this._lastNumber = this._getLastItem(false);
+
         }
-        let result = eval(this._operation.join(''));
+
+        let result = this._getResult();
 
         switch (last) {
             case '%':
@@ -167,9 +188,26 @@ class CalcController {
         this._setLastNumberToDisplay();
     }
 
+    _getLastItem(isOperator = true) {
+        let lastItem = '';
+
+        for (let index = this._operation.length-1; index >= 0; index--) {
+            
+            if(this._isOperator(this._operation[index]) == isOperator) {
+                lastItem = this._operation[index];
+                break;  
+            }    
+        }
+
+        if(!lastItem) lastItem = (isOperator) ? this._lastOperator : this._lastNumber;
+        
+
+        return lastItem;
+    }
+
     _setLastNumberToDisplay() {
 
-        let lastNumber = 0;
+        let lastNumber = this._getLastItem(false);
 
         for (let index = this._operation.length-1; index >= 0; index--) {
 
