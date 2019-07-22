@@ -314,11 +314,60 @@ class CalcController {
         this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
     }
 
+    _initKeyboardEvents() {
+
+        document.addEventListener('keyup', e => {
+            switch (e.key) {
+                case 'Escape':
+                    this._clearAll();
+                    break;
+    
+                case 'Backspace':
+                    this._cancelEntry();
+                    break;
+    
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                case '%':
+                    this._addOperation(e.key);
+                    break;
+    
+                case 'Enter':
+                case '=':
+                    this._calc();
+                    break;
+    
+                case '.':
+                case ',':
+                    this._addDot();
+                    break;
+    
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+    
+                    this._addOperation(parseInt(e.key));
+                    break;
+            }
+        })
+
+    }
+
     _init() {
         this._setDisplayDateTime();
         setInterval(() => {
             this._setDisplayDateTime()
         }, 1000);
         this._initButtonsEvents();
+        this._initKeyboardEvents();
     }
 }
