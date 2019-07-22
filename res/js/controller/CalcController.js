@@ -119,6 +119,8 @@ class CalcController {
 
         let lastOperation = this._getLasOperation();
 
+        if(typeof lastOperation === 'string' && lastOperation && lastOperation.split('').indexOf('.') > -1) return;
+
         if (this._isOperator(lastOperation) || !lastOperation) {
             this._pushOperation('0.');
         } else {
@@ -132,7 +134,7 @@ class CalcController {
         this._operation = [];
         this._lastNumber = '';
         this._lastOperator = '';
-        
+
         this._setLastNumberToDisplay();
     }
 
@@ -262,7 +264,7 @@ class CalcController {
                 //é um número
 
                 const newValue = this._getLasOperation().toString() + val.toString();
-                this._setLastOperation(parseFloat(newValue));
+                this._setLastOperation(newValue);
 
                 this._setLastNumberToDisplay();
             }
